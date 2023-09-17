@@ -17,12 +17,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.TestPropertySources;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.thymeleaf.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
 class ItemRepositoryTest {
@@ -32,6 +34,7 @@ class ItemRepositoryTest {
 
     @Autowired
     ItemRepository itemRepository;
+
 
     @Test
     @DisplayName("상품 저장 테스트")
