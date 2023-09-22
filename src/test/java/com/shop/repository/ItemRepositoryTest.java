@@ -38,21 +38,8 @@ class ItemRepositoryTest {
 
     @Test
     @DisplayName("상품 저장 테스트")
-    public void createItemTest() {
-        Item item = new Item();
-        item.setItemNm("테스트 상품");
-        item.setPrice(10000);
-        item.setItemDetail("테스트 상품 상세 설명");
-        item.setItemSellStatus(ItemSellStatus.SELL);
-        item.setStockNumber(100);
-        item.setRegTime(LocalDateTime.now());
-        item.setUpdateTime(LocalDateTime.now());
-        Item savedItem = itemRepository.save(item);
-        System.out.println(savedItem.toString());
-    }
-
     public void createItemList(){
-        for(int i = 1; i<10; i++){
+        for(int i = 1; i<=10; i++){
             Item item = new Item();
             item.setItemNm("테스트 상품" + i);
             item.setPrice(10000 + i);
@@ -69,7 +56,7 @@ class ItemRepositoryTest {
     @DisplayName("상품명 조회 테스트")
     public void findByItemNmTest(){
         this.createItemList();
-        List<Item> itemList = itemRepository.findByItemNm("테스트 상품 1");
+        List<Item> itemList = itemRepository.findByItemNm("테스트 상품1");
         for(Item item : itemList){
             System.out.println(item.toString());
         }
@@ -80,7 +67,7 @@ class ItemRepositoryTest {
     public void findByItemNmOrItemDetailTest(){
         this.createItemList();
         List<Item> itemList =
-                itemRepository.findByItemNmOrItemDetail("테스트 상품 1", "테스트 상품 상세 설명5");
+                itemRepository.findByItemNmOrItemDetail("테스트 상품1", "테스트 상품 상세 설명5");
         for(Item item : itemList){
             System.out.println((item.toString()));
         }
@@ -100,7 +87,7 @@ class ItemRepositoryTest {
     @DisplayName("가격 내림 차순 조회 테스트")
     public void findByPriceLessThanOrderByPriceDesc(){
         this.createItemList();
-        List<Item> itemList = itemRepository.findByPriceLessThanOrderByPriceDesc(100005);
+        List<Item> itemList = itemRepository.findByPriceLessThanOrderByPriceDesc(10005);
         for (Item item : itemList){
             System.out.println(item.toString());
         }
@@ -128,7 +115,7 @@ class ItemRepositoryTest {
 
     @Test
     @DisplayName("Querydsl 조회테스트1")
-    public void queryDslTest(){
+    public void  queryDslTest(){
         this.createItemList();
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QItem qItem = QItem.item;
