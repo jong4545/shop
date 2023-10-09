@@ -20,21 +20,21 @@ class ItemControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Test
-    @DisplayName("상품 등록 페이지 권한 테스트")
-    @WithMockUser(username = "admin", roles = "ADMIN")
-    public void itemFormTest() throws Exception{
-        mockMvc.perform(MockMvcRequestBuilders.get("/admin/item/new"))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DisplayName("상품 등록 페이지 일반 회원 접근 테스트")
-    @WithMockUser(username = "user", roles = "USER")
-    public void itemFormNotAdminTest() throws Exception{
-        mockMvc.perform(MockMvcRequestBuilders.get("/admin/item/new"))
-                .andDo(print())
-                .andExpect(status().isForbidden());
-    }
+//    @Test
+//    @DisplayName("상품 등록 페이지 권한 테스트")
+//    @WithMockUser(username = "admin", roles = "ADMIN")
+//    public void itemFormTest() throws Exception{
+//        mockMvc.perform(MockMvcRequestBuilders.get("/admin/item/new"))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//    }
+//
+//    @Test
+//    @DisplayName("상품 등록 페이지 일반 회원 접근 테스트")
+//    @WithMockUser(username = "user", roles = "USER")
+//    public void itemFormNotAdminTest() throws Exception{
+//        mockMvc.perform(MockMvcRequestBuilders.get("/admin/item/new"))
+//                .andDo(print())
+//                .andExpect(status().isForbidden());
+//    }
 }

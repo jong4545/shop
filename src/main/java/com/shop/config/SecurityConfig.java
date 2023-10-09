@@ -17,74 +17,49 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
 public class SecurityConfig {
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeRequests()
-                .anyRequest().permitAll();
-        return http.build();
-    }
-
 
     @Autowired
     MemberService memberService;
 
-    @Override
-    protected  void configure(HttpSecurity http) throws  Exception{
-        http.formLogin()
-                .loginPage("/members/login")
-                .defaultSuccessUrl("/")
-                .usernameParameter("email")
-                .failureUrl("/members/login/error")
-                .and()
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
-                .logoutSuccessUrl("/");
-    }
-
-
-
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
 
+                .formLogin(formLogin ->
+                        formLogin
+                                .loginPage("/members/login")
+                                .defaultSuccessUrl("/")
+                                .usernameParameter("email")
+                                .failureUrl("/members/login/error")
+                )
+                .logout(logout ->
+                        logout
+                                .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
+                                .logoutSuccessUrl("/")
+                )
+                .authorizeHttpRequests(authorizeRequests ->
+                        authorizeRequests
+                                .requestMatchers(new AntPathRequestMatcher("/css/**"),
+                                        new AntPathRequestMatcher("/js/**"),
+                                        new AntPathRequestMatcher("/img/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/"),
+                                        new AntPathRequestMatcher("/members/**"),
+                                        new AntPathRequestMatcher("/item/**"),
+                                        new AntPathRequestMatcher("/images/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/admin/**")).hasRole("ADMIN")
+                                .anyRequest().authenticated()
+                )
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling
+                                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                );
+
+        return http.build();
+    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth)
-        throws Exception {
-        auth.userDetailsService(memberService)
-                .passwordEncoder(passwordEncoder());
-    }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception{
-        http.formLogin()
-                .loginPage("/members/login")
-                .defaultSuccessUrl("/")
-                .usernameParameter("email")
-                .failureUrl("/members/login/error")
-                .and()
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
-                .logoutSuccessUrl("/")
-        ;
-
-        http.authorizeHttpRequests()
-                .mvcMatchers("/","/members/**", "/item/**","/images/**").permitAll()
-                .mvcMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-                ;
-
-                http.exceptionHandling()
-                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-                        ;
-
-    }
-
-    @Override
-    public void configure(WebSecurity web) throws Exception{
-        web.ignoring().antMatchers("/css/**","/js/**","/img/**");
-    }
 }
